@@ -1,6 +1,6 @@
 name: 'abn-ambro-recipe-project'
 services:
-  catalog-db:
+  service-db:
     image: postgres:16-alpine
     container_name: recipe-db
     environment:
