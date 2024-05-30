@@ -1,5 +1,5 @@
 --
-insert into RECIPE (NAME, TYPE, SERVINGS)
+insert into RECIPE (NAME, RECIPE_TYPE, SERVINGS)
 values ('Recipe 1', 'OTHER', 4);
 
 --
@@ -17,7 +17,7 @@ values (1, 'Mix ingredients together except the raisins.', 1),
        (4, 'Serve and enjoy! Use Organic Ingredients if Available', 1);
 
 --
-insert into RECIPE (NAME, TYPE, SERVINGS)
+insert into RECIPE (NAME, RECIPE_TYPE, SERVINGS)
 values ('Recipe 2', 'VEGETARIAN', 1);
 
 insert into INGREDIENT (NAME, RECIPE_ID)

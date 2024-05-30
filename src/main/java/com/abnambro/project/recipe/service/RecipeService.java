@@ -5,18 +5,18 @@ import com.abnambro.project.recipe.entity.Instruction;
 import com.abnambro.project.recipe.entity.Recipe;
 import com.abnambro.project.recipe.mapper.RecipeMapper;
 import com.abnambro.project.recipe.model.RecipeRequest;
+import com.abnambro.project.recipe.model.RecipeSearch;
 import com.abnambro.project.recipe.model.create_recipe.response.CreateRecipeResponse;
 import com.abnambro.project.recipe.model.get_recipe.response.RecipeResponse;
 import com.abnambro.project.recipe.repository.RecipeRepository;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional
@@ -86,8 +86,14 @@ public class RecipeService {
         }
 
         AtomicInteger count = new AtomicInteger(0);
-        currentInstructions.forEach(i->i.setStep(count.incrementAndGet()));
-
+        currentInstructions.forEach(i -> i.setStep(count.incrementAndGet()));
         recipeRepository.save(existingRecipe);
+    }
+
+    public List<RecipeResponse> filterRecipe(RecipeSearch recipeSearch) {
+        List<Recipe> recipesByCriteria = recipeRepository.findRecipesByCriteria(recipeSearch.getRecipeType(),
+                recipeSearch.getServings(), recipeSearch.getIngredientName(),
+                recipeSearch.getExcludeIngredientName(), recipeSearch.getInstructionText());
+        return recipeMapper.mapToRecipeResponse(recipesByCriteria);
     }
 }

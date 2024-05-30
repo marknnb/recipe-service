@@ -2,9 +2,10 @@ package com.abnambro.project.recipe.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
 
 @Getter
 @Setter

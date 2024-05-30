@@ -3,13 +3,11 @@ package com.abnambro.project.recipe.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,15 +25,15 @@ public class Recipe {
     private String name;
 
     @Size(max = 255)
-    @NotNull @Column(name = "type", nullable = false)
+    @NotNull @Column(name = "recipe_type", nullable = false)
     private String type;
 
     @NotNull @Column(name = "servings", nullable = false)
     private Integer servings;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Instruction> instructions = new ArrayList<>();
 }

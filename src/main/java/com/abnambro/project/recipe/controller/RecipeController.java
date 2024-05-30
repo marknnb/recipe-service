@@ -1,14 +1,16 @@
 package com.abnambro.project.recipe.controller;
 
 import com.abnambro.project.recipe.model.RecipeRequest;
+import com.abnambro.project.recipe.model.RecipeSearch;
 import com.abnambro.project.recipe.model.create_recipe.response.CreateRecipeResponse;
 import com.abnambro.project.recipe.model.get_recipe.response.RecipeResponse;
 import com.abnambro.project.recipe.service.RecipeService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/v1/recipe")
@@ -46,4 +48,12 @@ public class RecipeController {
         log.info("Updating the recipe by given properties");
         recipeService.updateRecipe(recipeId, request);
     }
+
+    @PostMapping(value = "/search")
+    public List<RecipeResponse> filterRecipe(@RequestBody RecipeSearch recipeSearch) {
+        log.info("Updating the recipe by given properties");
+        return recipeService.filterRecipe(recipeSearch);
+    }
+
+
 }

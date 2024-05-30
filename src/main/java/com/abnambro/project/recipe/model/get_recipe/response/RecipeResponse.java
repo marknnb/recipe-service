@@ -1,7 +1,8 @@
 package com.abnambro.project.recipe.model.get_recipe.response;
 
-import java.util.List;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public class RecipeResponse {
@@ -9,6 +10,6 @@ public class RecipeResponse {
     public String name;
     public String type;
     public int numberOfServings;
-    public List<IngredientResponse> ingredientResponses;
-    public List<InstructionResponse> instructionResponses;
+    public List<String> ingredientResponses;
+    public List<String> instructionResponses;
 }

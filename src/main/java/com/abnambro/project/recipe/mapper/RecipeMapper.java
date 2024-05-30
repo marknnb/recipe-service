@@ -4,16 +4,13 @@ import com.abnambro.project.recipe.entity.Ingredient;
 import com.abnambro.project.recipe.entity.Instruction;
 import com.abnambro.project.recipe.entity.Recipe;
 import com.abnambro.project.recipe.model.RecipeRequest;
-import com.abnambro.project.recipe.model.get_recipe.response.IngredientResponse;
-import com.abnambro.project.recipe.model.get_recipe.response.InstructionResponse;
 import com.abnambro.project.recipe.model.get_recipe.response.RecipeResponse;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @Slf4j
@@ -34,26 +31,15 @@ public class RecipeMapper {
                             .name(item.getName())
                             .type(item.getType())
                             .numberOfServings(item.getServings())
-                            .ingredientResponses(getIngredientResponses(ingredients))
-                            .instructionResponses(getInstructionResponses(instructions))
+                            .ingredientResponses(ingredients.stream()
+                                    .map(Ingredient::getName)
+                                    .toList())
+                            .instructionResponses(instructions.stream()
+                                    .map(Instruction::getDescription)
+                                    .toList())
                             .build();
                 })
                 .orElseThrow(() -> new RuntimeException("Error in mapping Recipe"));
-    }
-
-    private static List<InstructionResponse> getInstructionResponses(List<Instruction> instructions) {
-        return instructions.stream()
-                .map(instruction -> InstructionResponse.builder()
-                        .instruction(instruction.getDescription())
-                        .build())
-                .toList();
-    }
-
-    private static List<IngredientResponse> getIngredientResponses(List<Ingredient> ingredients) {
-        return ingredients.stream()
-                .map(ingredient ->
-                        IngredientResponse.builder().name(ingredient.getName()).build())
-                .toList();
     }
 
     public Recipe mapToRecipeEntity(RecipeRequest request) {
