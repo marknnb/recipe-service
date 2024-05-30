@@ -4,7 +4,7 @@ CREATE TABLE instruction
 (
     id          BIGINT default nextval('instruction_id_seq') NOT NULL,
     recipe_id   BIGINT,
-    step        INT                   NOT NULL,
+    step        INT                   ,
     description text,
     CONSTRAINT pk_instruction PRIMARY KEY (id)
 );

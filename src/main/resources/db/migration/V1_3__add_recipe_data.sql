@@ -21,10 +21,10 @@ insert into RECIPE (NAME, TYPE, SERVINGS)
 values ('Recipe 2', 'VEGETARIAN', 1);
 
 insert into INGREDIENT (NAME, RECIPE_ID)
-values ('Beans', 1)
-     , ('1 1/2 tablespoons of Curry powder', 1)
-     , ('1 big spoon of vegetable oil', 1)
-     , ('Coriander', 1);
+values ('Beans', 2)
+     , ('1 1/2 tablespoons of Curry powder', 2)
+     , ('1 big spoon of vegetable oil', 2)
+     , ('Coriander', 2);
 
 insert into INSTRUCTION (STEP, DESCRIPTION, RECIPE_ID)
 values (1, 'Boil the Beans', 2),
