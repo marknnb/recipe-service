@@ -28,7 +28,7 @@
 * Git maven plugin is used to capture the commit details on application
 * 
 
-# decisions taken while implementing the recipe-service
+# Decisions taken while implementing the recipe-service
 * package by layer
   * file structure is based on domain layers in the application.
 
