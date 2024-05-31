@@ -25,7 +25,7 @@ public class RecipeControllerTests extends AbstractIT {
                 .get("/api/v1/recipe/1")
                 .then()
                 .statusCode(200)
-                .body("size()", is(1));
+                .body("recipeId", is("1"));
     }
 
     @Test
