@@ -1,8 +1,7 @@
 package com.abnambro.project.recipe.model.get_recipe.response;
 
-import lombok.Builder;
-
 import java.util.List;
+import lombok.Builder;
 
 @Builder
 public class RecipeResponse {

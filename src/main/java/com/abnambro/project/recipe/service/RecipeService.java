@@ -1,35 +1,34 @@
 package com.abnambro.project.recipe.service;
 
+import com.abnambro.project.recipe.config.ErrorMessagePropertyConfig;
 import com.abnambro.project.recipe.entity.Ingredient;
 import com.abnambro.project.recipe.entity.Instruction;
 import com.abnambro.project.recipe.entity.Recipe;
+import com.abnambro.project.recipe.exception.RecipeNotFoundException;
 import com.abnambro.project.recipe.mapper.RecipeMapper;
 import com.abnambro.project.recipe.model.RecipeRequest;
 import com.abnambro.project.recipe.model.RecipeSearch;
 import com.abnambro.project.recipe.model.create_recipe.response.CreateRecipeResponse;
 import com.abnambro.project.recipe.model.get_recipe.response.RecipeResponse;
 import com.abnambro.project.recipe.repository.RecipeRepository;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Service
 @Transactional
 @Slf4j
+@AllArgsConstructor
 public class RecipeService {
     private final RecipeRepository recipeRepository;
-
     private final RecipeMapper recipeMapper;
-
-    public RecipeService(RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
-        this.recipeRepository = recipeRepository;
-        this.recipeMapper = recipeMapper;
-    }
+    private final ErrorMessagePropertyConfig messageProvider;
+    private final InputSanitizationService inputSanitizationService;
 
     public List<RecipeResponse> getRecipeList(int page, int size) {
         page = page <= 1 ? 0 : page - 1;
@@ -42,18 +41,19 @@ public class RecipeService {
         return recipeRepository
                 .findById(Long.valueOf(id))
                 .map(recipeMapper::mapToRecipeResponse)
-                .orElseThrow(() -> new RuntimeException("NOT FOUND"));
+                .orElseThrow(this::throwRecipeNotFoundException);
     }
 
     public CreateRecipeResponse createRecipe(RecipeRequest request) {
+        inputSanitizationService.sanitizeRecipe(request);
         Recipe recipe = recipeMapper.mapToRecipeEntity(request);
         Recipe save = recipeRepository.save(recipe);
         return CreateRecipeResponse.builder().recipeId(save.getId().toString()).build();
     }
 
     public void updateRecipe(Long id, RecipeRequest updatedRecipeRequest) {
-        Recipe existingRecipe =
-                recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found"));
+        inputSanitizationService.sanitizeRecipe(updatedRecipeRequest);
+        Recipe existingRecipe = recipeRepository.findById(id).orElseThrow(this::throwRecipeNotFoundException);
         existingRecipe.setName(updatedRecipeRequest.getName());
 
         // Convert the updated instructions and ingredients from String to Entity
@@ -90,10 +90,23 @@ public class RecipeService {
         recipeRepository.save(existingRecipe);
     }
 
+    public void deleteRecipeById(Long recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(this::throwRecipeNotFoundException);
+        recipeRepository.delete(recipe);
+    }
+
     public List<RecipeResponse> filterRecipe(RecipeSearch recipeSearch) {
-        List<Recipe> recipesByCriteria = recipeRepository.findRecipesByCriteria(recipeSearch.getRecipeType(),
-                recipeSearch.getServings(), recipeSearch.getIngredientName(),
-                recipeSearch.getExcludeIngredientName(), recipeSearch.getInstructionText());
+        inputSanitizationService.sanitizeRecipe(recipeSearch);
+        List<Recipe> recipesByCriteria = recipeRepository.findRecipesByCriteria(
+                recipeSearch.getRecipeType(),
+                recipeSearch.getServings(),
+                recipeSearch.getIngredientName(),
+                recipeSearch.getExcludeIngredientName(),
+                recipeSearch.getInstructionText());
         return recipeMapper.mapToRecipeResponse(recipesByCriteria);
+    }
+
+    private RecipeNotFoundException throwRecipeNotFoundException() {
+        return new RecipeNotFoundException(messageProvider.getMessage("recipe.notFound"));
     }
 }

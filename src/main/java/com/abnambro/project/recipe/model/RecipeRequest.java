@@ -5,10 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -23,11 +22,11 @@ public class RecipeRequest {
     @NotNull(message = "{numberOfServings.notNull}") @Positive(message = "{numberOfServings.positive}") @ApiModelProperty(notes = "The number of servings per recipe", example = "4")
     private int numberOfServings;
 
-    @NotEmpty
+    @NotEmpty(message = "{ingredients.notEmpty}")
     @ApiModelProperty(notes = "The ids of the ingredients needed to make the recipe", example = "[1,2]")
     private List<String> ingredients;
 
-    @NotEmpty
+    @NotEmpty(message = "{instructions.notEmpty}")
     @ApiModelProperty(notes = "Instructions to prepare recipe", example = "[cut vegetables,wash rice]")
     private List<String> instructions;
 }
